@@ -60,6 +60,9 @@ int findMaxAllSubTree(tNode *root, tNode **p){
   int localMax = (lv > rv)?lv:rv;
   tNode *maxP = (lv > rv)?tp:tq;
 
+  if (root->lChild == NULL && root->rChild == NULL)
+    localMax = 1<<31;
+  
   int sum = lv + rv + root->value;
 
   if (sum  > localMax)
@@ -73,7 +76,7 @@ tNode* constructTestTree(int level){
   if (level == 0)
     return NULL;
   tNode * r = (tNode *) malloc (sizeof(tNode));
-  r -> value = (rand() % 2 == 0 ? 1 : -1) * rand(time(NULL)) % 10;
+  r -> value = (rand() % 2 == 0 ? 1 : -1) * rand(time()) % 10;
   r->lChild = constructTestTree(level - 1);
   r->rChild = constructTestTree(level - 1);
   return r;
@@ -93,8 +96,13 @@ int main(int argc, char **argv){
   printf("\n");
   tNode *max = NULL;
   findMaxSubTree(r, &max, 0);
+  if (max != NULL)
+    printf("ROOT1: %d\n", max->value);
   
   findMaxSubTree(r, &max, 1);
+  if (max != NULL)
+    printf("ROOT2: %d\n", max->value);
+  
   return 1;
 }
 
