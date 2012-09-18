@@ -73,7 +73,7 @@ tNode* constructTestTree(int level){
   if (level == 0)
     return NULL;
   tNode * r = (tNode *) malloc (sizeof(tNode));
-  r -> value = (rand() % 2 == 0 ? 1 : -1) * rand() % 10;
+  r -> value = (rand() % 2 == 0 ? 1 : -1) * rand(time(NULL)) % 10;
   r->lChild = constructTestTree(level - 1);
   r->rChild = constructTestTree(level - 1);
   return r;
@@ -89,8 +89,11 @@ void printTree(tNode *r){
 
 int main(int argc, char **argv){
   tNode *r = constructTestTree(3);
+  printTree(r);
+  printf("\n");
   tNode *max = NULL;
   findMaxSubTree(r, &max, 0);
+  
   findMaxSubTree(r, &max, 1);
   return 1;
 }
