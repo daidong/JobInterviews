@@ -12,10 +12,12 @@ typedef struct TREE_NODE{
  */
 
 int findMaxSubTree(tNode *root, tNode **p, int flag){
-  if (flag == 1)
-    return findMaxPositiveSubTree(root, p);
-  else
+  if (flag == 1){
+    int contain = 0;
+    return findMaxPosSubTree(root, p, &containt);
+  } else {
     return findMaxAllSubTree(root, p);
+  }
 }
 int findMaxPosSubTree(tNode *root, tNode **p, int *contain){
   if (root == NULL)
