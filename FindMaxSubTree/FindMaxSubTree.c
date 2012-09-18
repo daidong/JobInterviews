@@ -11,40 +11,70 @@ typedef struct TREE_NODE{
    find the maximum subtree.
  */
 
-tNode *currMax = NULL;
-int currMaxValue = (1<<31);
-int gError = 0;
-
-int findMaxSubTree(tNode *root){
+int findMaxSubTree(tNode *root, tNode **p, int flag){
+  if (flag == 1)
+    return findMaxPositiveSubTree(root, p);
+  else
+    return findMaxAllSubTree(root, p);
+}
+int findMaxPosSubTree(tNode *root, tNode **p, int *contain){
   if (root == NULL)
-    return 0;
-  int l = 0;
-  int r = 0;
-  if (root->lChild != NULL)
-    l = findMaxSubTree(root->lChild);
-  if (root->rChild != NULL)
-    r = findMaxSubTree(root->rChild);
-  int c = root->value;
+    return NULL;
 
-  if ( (c + r + l) > currMaxValue ){
-    currMaxValue = c + r + l;
-    currMax = root;
+  tNode *tp = NULL, *tq = NULL;
+  int lf = 0, rf = 0;
+  int lv = (root->lChild == NULL)?0:findMaxPosSubTree(root->lChild, &tp, &lf);
+  int rv = (root->rChild == NULL)?0:findMaxPosSubTree(root->rChild, &tq, &rf);
+  (*contain) = (lf || rf || (root->value < 0));
+  int localMax = (lv > rv)?lv:rv;
+  tNode *maxP = (lv > rv)?tp:tq;
+
+  if (lf){
+    localMax = rv;
+    maxP = tq;
   }
-  return c+r+l;
+  if (rf){
+    localMax = lv;
+    maxP = tp;
+  }
+
+  int sum = lv + rv + root->value;
+  if (!(*contain) && sum > localMax){
+    (*p) = root;
+    return sum;
+  } else {
+    (*p) = maxP;
+    return localMax;
+  }
+}
+int findMaxAllSubTree(tNode *root, tNode **p){
+  if (root == NULL)
+    return NULL;
+
+  tNode *tp = NULL, *tq = NULL;
+  int lv = (root->lChild == NULL)?0:findMaxPosSubTree(root->lChild, &tp);
+  int rv = (root->rChild == NULL)?0:findMaxPosSubTree(root->rChild, &tq);
+
+  int localMax = (lv > rv)?lv:rv;
+  tNode *maxP = (lv > rv)?tp:tq;
+
+  int sum = lv + rv + root->value;
+
+  if (sum  > localMax)
+    (*p) = root;
+  else
+    (*p) = maxP;
+
+  return sum;
 }
 
 int main(int argc, char **argv){
   tNode *r = constructTestTree(3);
-  printTree(r);
-  printf("\n");
-  findMaxSubTree(r);
-  if (currMax != NULL && gError == 0){
-    printf("Max Value is: %d\n", currMaxValue);
-  }
+  findMaxSubTree(r, 0);
+  findMaxSubTree(r, 1);
   return 1;
 }
-
-/**
+/*
 tNode* constructTestTree(int level){
   if (level == 0)
     return NULL;
@@ -62,4 +92,4 @@ void printTree(tNode *r){
   printf("%d ", r->value);
   printTree(r->rChild);
 }
- */
+*/
