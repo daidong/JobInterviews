@@ -38,12 +38,29 @@ int findAverage2(char array[], int N, int i, int j, double *hpa){
 		return 0;
 	return (hpa[i] * (N - i) - hpa[j] * (N - j)) / (j - i);
 }
+int findMiddleCore(char *a, int s, int e, int find){
+	int index = e;
+	
+	int small = s - 1;
+	for (index = s; index < e; index++){
+		if (a[index] < a[e]){
+			small++;
+			if (small != index){
+				char tmp = a[index];
+				a[index] = a[small];
+				a[small] = tmp;
+			}
+		}
+	}
+	small++;	
+}
+
 int findMiddle(char array[], int N, int i, int j){
 	if (i > j || i >= N || j >= N || i < 0 || j < 0)
 		return -1;
 	if (i == j)
 		return array[i];
-	return (array[i] + array[j])/2;
+	return findMiddleCore(array, i, j, (j - i + 1)/2 );
 }
 int main(int argc, char **argv){
 	char array[] = "asdfasdfasdfasdf";
