@@ -22,6 +22,22 @@ int findAverage(char array[], int N, int i, int j, int *hpa){
 		return 0;
 	return (hpa[i] - hpa[j])/(j - i);
 }
+double *preProcess2(char array[], int N){
+	double *p = (double *)malloc(sizeof(double) * (N+1));
+	int i = 0; 
+	p[N] = 0.0;
+	for (i = N - 1; i >= 0; i--){
+		p[i] = (p[i+1] * (N - i - 1) + array[i])/(N - i);
+	}
+	return p;
+}
+int findAverage2(char array[], int N, int i, int j, double *hpa){
+	if (i > j || i >= N || j >= N || i < 0 || j < 0)
+		return -1;
+	if (i == j)
+		return 0;
+	return (hpa[i] * (N - i) - hpa[j] * (N - j)) / (j - i);
+}
 int findMiddle(char array[], int N, int i, int j){
 	if (i > j || i >= N || j >= N || i < 0 || j < 0)
 		return -1;
@@ -32,7 +48,9 @@ int findMiddle(char array[], int N, int i, int j){
 int main(int argc, char **argv){
 	char array[] = "asdfasdfasdfasdf";
 	int *p = preProcess(array, 16);
+	double *pd = preProcess2(array, 16);
 	printf("find average 2 to 9: %d\n", findAverage(array, 16, 2, 9, p));
+	printf("find average 2 to 9: %d\n", findAverage2(array, 16, 2, 9, pd));
 	printf("find middle 2 to 9: %d\n", findMiddle(array, 16, 2, 9));
 	return 1;
 }
